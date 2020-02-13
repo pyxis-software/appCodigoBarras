@@ -81,5 +81,30 @@ class _ConfiguracaoState extends State<Configuracao> {
     String campo = _controllerHost.text;
     SharedPreferences pref = await SharedPreferences.getInstance();
     pref.setString('host', campo);
+    _showDialog();
+  }
+
+  //Mensgaem de sucesso ao salvar
+  void _showDialog() {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          content: new Text("Configurações Salvas Com Sucesso!",
+          style: TextStyle(fontSize: 25, color: Colors.green)),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Ok"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

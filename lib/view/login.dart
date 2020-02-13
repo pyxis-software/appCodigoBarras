@@ -23,7 +23,6 @@ class _LoginState extends State<Login> {
     super.initState();
 
     //Minhas variáveis
-    host = "";
     carregando = true;
     load(carregando);
     verificaHost();
@@ -101,9 +100,13 @@ class _LoginState extends State<Login> {
 
   void actionLogin(){
     String user = _controllerUser.text;
-    print(user);
     String password = _controllerPassword.text;
-    Future<Autenticate> aut = fetchPost(user, password);
+    if(user != "" && password != ""){
+      Future<Autenticate> aut = fetchPost(user, password);
+    }else{
+      print('vazios');
+      _showDialogVazios();
+    }
   }
 
   //Load da página
@@ -120,18 +123,46 @@ class _LoginState extends State<Login> {
       host = h;
     });
   }
-}
+  //Mensagem de campos vazios
+  void _showDialogVazios() {
+      // flutter defined function
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return AlertDialog(
+            content: new Text("Usuário ou senha incorreta!",
+            style: TextStyle(fontSize: 25, color: Colors.redAccent)),
+            actions: <Widget>[
+              // usually buttons at the bottom of the dialog
+              new FlatButton(
+                child: new Text("Ok"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+  }
 
-Future<Autenticate> fetchPost(String user, String password) async {
-  String url = 'http://destakpe.gsisoft.com.br/auth/'+ user +'/'+ password;
-  final response = await http.get(url,
-    headers: {
-      HttpHeaders.authorizationHeader: "e068ae3b97a36f345a398a0d41d9f603bf9c96db1950035e52ec930a42b4"}
-  );
-  final responseJson = json.decode(response.body);
-  print(responseJson);
+  Future<Autenticate> fetchPost(String user, String password) async {
+    String url = 'http://'+host +'/auth/'+ user +'/'+ password;
 
-  return Autenticate.fromJson(responseJson);
+    Map<String, String> headers = new Map<String, String>();
+    headers['Content-Type'] = "application/json";
+    headers['Accept'] = "application/json";
+    headers['Authorization'] = "Bearer e068ae3b97a36f345a398a0d41d9f603bf9c96db1950035e52ec930a42b4";
+    print(url);
+    final response = await http.get(url,
+      headers: headers,
+    );
+    final responseJson = json.decode(response.body);
+    print(responseJson);
+
+    return Autenticate.fromJson(responseJson);
+  }
 }
 
 class Autenticate {
