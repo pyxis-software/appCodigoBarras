@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Configuracao extends StatefulWidget {
   @override
@@ -9,6 +10,13 @@ class Configuracao extends StatefulWidget {
 class _ConfiguracaoState extends State<Configuracao> {
 
   final _controllerHost =  TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    buscaHost();
+  }
 
 
   @override
@@ -58,7 +66,20 @@ class _ConfiguracaoState extends State<Configuracao> {
     );
   }
 
-  void actionSalvar(){
-    print("Salva");
+  //Busca o host salvo
+  void buscaHost() async{
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String h = pref.getString('host');
+    if(h != null){
+      setState(() {
+        _controllerHost.text = h;
+      });
+    }
+  }
+
+  void actionSalvar() async {
+    String campo = _controllerHost.text;
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    pref.setString('host', campo);
   }
 }

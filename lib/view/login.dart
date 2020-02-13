@@ -14,11 +14,18 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
 
+  //Minhas variáveis
+  String host;
+  bool carregando = true;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    final bool load = true;
+
+    //Minhas variáveis
+    host = "";
+    carregando = true;
+    load(carregando);
     verificaHost();
   }
 
@@ -100,13 +107,18 @@ class _LoginState extends State<Login> {
   }
 
   //Load da página
-  
+  void load(bool ativo){
+  }
 
   //Verifica se existe o host salvo
-  void verificaHost(){
+  void verificaHost() async{
     //Sharepreferences
     
-    SharedPreferences pref = await
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String h = pref.getString("host");
+    setState(() {
+      host = h;
+    });
   }
 }
 
